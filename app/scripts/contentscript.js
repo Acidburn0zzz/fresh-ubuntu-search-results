@@ -9,3 +9,4 @@ console.log('chrome.tabs.Tab.url', chrome.tabs.Tab.url);
 //chrome.webNavigation.onCommitted.addListener((e) => {
 //  console.log(e);
 //}, {url:[{queryContains:'ubuntu'}]});
+//# sourceMappingURL=contentscript.js.map
