@@ -1,8 +1,8 @@
 {
-  "name": "filter results older then a year when searching ubuntu topics",
+  "name": "__MSG_appName__",
   "version": "0.0.3",
   "manifest_version": 2,
-  "description": "filter results older then a year when searching ubuntu topics",
+  "description": "__MSG_appDescription__",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"
@@ -19,7 +19,7 @@
       "19": "images/icon-19.png",
       "38": "images/icon-38.png"
     },
-    "default_title": "filter results older then a year when searching ubuntu topics"
+    "default_title": "__MSG_appName__"
   },
   "permissions": [
     "tabs"
