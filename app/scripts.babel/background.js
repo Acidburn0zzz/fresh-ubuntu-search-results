@@ -1,12 +1,25 @@
 'use strict';
+/*
+* CREDITS:
+* Umbrella icon by Jerry Low https://www.iconfinder.com/jerrylow
+* */
+
 
 // match http{s,}://{www.,}google.com/{webhp,search}*
 // ie https://www.google.com/webhp
 const reGoogle = /^https?:\/\/(?:www\.)?google\.com\/(?:webhp|search)/;
 
+/*
+ * callback:
+ * id: browser tab identifier
+ * tab: object containing updated tab info
+ * */
 chrome.tabs.onUpdated.addListener((id, tab) => {
 
-  // tab.url only exists IF url is changed.
+  /*
+   * `tab.url` only exists IF url is changed.
+   * */
+  // IF url changed and is a google search
   if (tab.hasOwnProperty('url') && reGoogle.test(tab.url)) {
     // IF url has a query string.
     if (tab.url.indexOf('#') !== -1) {
@@ -17,22 +30,23 @@ chrome.tabs.onUpdated.addListener((id, tab) => {
         .split('&')
         .reduce((obj, param) => obj.set(...param.split('=')), new Map());
 
-      // If `q` contains ubuntu
+      // If `q` exists and contains ubuntu
       if (payload.has('q') && payload.get('q').indexOf('ubuntu') !== -1) {
+        //show the sweet `pageAction` icon in the address bar.
         chrome.pageAction.show(id);
 
         /*
          * Payload param `tbas=0` means filter "all time"; allowing user to
          * forcefully override this extension.
          * */
-        // IF has date filter, exit.
+        // IF the date filter is already set, exit. ELSE set to 'last year'.
         if (payload.has('tbs') || payload.has('tbas')) {
           return;
         } else {
           payload.set('tbs', 'qdr:y');
         }
 
-        // compile the destination url with filter parameter.
+        // Compile the destination url with filter parameter.
         const destination = url + '#' + [...payload.entries()]
             .map((params) => params.join('='))
             .join('&');
