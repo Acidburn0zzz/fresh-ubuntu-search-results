@@ -11,23 +11,27 @@ chrome.runtime.onInstalled.addListener(function (details) {
 chrome.tabs.onUpdated.addListener(function (tabId) {
   chrome.pageAction.show(tabId);
 });
-//
+
 //chrome.webRequest.onBeforeRequest.addListener(request => {
 //  if (request.url.indexOf('?') !== -1) {
-//    const [url, _payload] = request.url.split('?');
-//
-//    const payload = _payload
-//      .split('&')
-//      .reduce((obj, param) => {
-//        const [key, ...value] = param.split('=');
-//        obj.set(key, value.join('='));
-//        return obj;
-//      }, new Map());
-//
-//    if (!payload.has('tbs')) {
-//      payload.set('tbs', 'qdr:y');
+//    let seperator;
+//    if (request.url.split('?')[0].endsWith('webhp')) {
+//      seperator = '#';
 //    } else {
+//      seperator = '?';
+//    }
+//    if (request.url.indexOf(seperator) === -1) {
 //      return;
+//    }
+//
+//    const url = request.url.split(seperator)[0];
+//    const payload = request.url
+//      .split(seperator)[1]
+//      .split('&')
+//      .reduce((obj, param) => obj.set(...param.split('=')), new Map());
+//
+//    if (payload.has('tbs')) {
+//      payload.set('tbs', 'qdr:y');
 //    }
 //    console.log('payload', payload);
 //
@@ -36,17 +40,17 @@ chrome.tabs.onUpdated.addListener(function (tabId) {
 //      .map((params) => params.join('='))
 //      .join('&');
 //
-//    const destination = url + '?' + payloadString;
-//    console.log('request.url.length', request.url.length);
-//    console.log('destination.length', destination.length);
-//    console.log('request.url', request.url);
-//    console.log('destination', destination);
+//    console.log('redirecting to', url + seperator + payloadString);
 //
-//    return {redirectUrl: destination};
+//
+//    return {redirectUrl: url + seperator + payloadString};
+//
 //  }
 //}, {urls: ['*://*.google.com/search*']}, ['blocking']);
+
 var reGoogle = /^https?:\/\/(?:www\.)?google\.com\/(?:webhp|search)/;
 chrome.tabs.onUpdated.addListener(function (id, tab) {
+
   if (tab.hasOwnProperty('url') && reGoogle.test(tab.url)) {
     if (tab.url.indexOf('#') !== -1) {
       var _tab$url$split = tab.url.split('#');
@@ -60,17 +64,22 @@ chrome.tabs.onUpdated.addListener(function (id, tab) {
         return obj.set.apply(obj, _toConsumableArray(param.split('=')));
       }, new Map());
 
-      if (!payload.has('tbs')) {
-        payload.set('tbs', 'qdr:y');
-      } else {
-        return;
-      }
-      var destination = url + '#' + [].concat(_toConsumableArray(payload.entries())).map(function (params) {
-        return params.join('=');
-      }).join('&');
+      if (payload.has('q') && payload.get('q').indexOf('ubuntu') !== -1) {
 
-      console.log('tab.url    ', tab.url);
-      console.log('destination', destination);
+        if (payload.has('tbs') || payload.has('tbas')) {
+          return;
+        } else {
+          payload.set('tbs', 'qdr:y');
+        }
+
+        var destination = url + '#' + [].concat(_toConsumableArray(payload.entries())).map(function (params) {
+          return params.join('=');
+        }).join('&');
+
+        console.log('tab.url    ', tab.url);
+        console.log('destination', destination);
+        chrome.tabs.update(id, { url: destination });
+      }
     }
   }
 });
