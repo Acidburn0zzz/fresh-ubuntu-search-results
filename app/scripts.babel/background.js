@@ -1,7 +1,9 @@
 'use strict';
 
-
+// match http{s,}://{www.,}google.com/{webhp,search}*
+// ie https://www.google.com/webhp
 const reGoogle = /^https?:\/\/(?:www\.)?google\.com\/(?:webhp|search)/;
+
 chrome.tabs.onUpdated.addListener((id, tab) => {
 
   // tab.url only exists IF url is changed.
@@ -20,8 +22,8 @@ chrome.tabs.onUpdated.addListener((id, tab) => {
         chrome.pageAction.show(id);
 
         /*
-         * Payload param `tbas=0` means filter "all time"; allowing user to forcefully override this extension.
-         *
+         * Payload param `tbas=0` means filter "all time"; allowing user to
+         * forcefully override this extension.
          * */
         // IF has date filter, exit.
         if (payload.has('tbs') || payload.has('tbas')) {
