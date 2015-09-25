@@ -1,5 +1,5 @@
 {
-  "name": "filter-results-older-then-a-year-when-searching-ubuntu-topics",
+  "name": "Fresh ubuntu search results",
   "private": true,
   "version": "0.0.0",
   "dependencies": {},

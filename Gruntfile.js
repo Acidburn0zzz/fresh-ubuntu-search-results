@@ -301,7 +301,7 @@ module.exports = function (grunt) {
         options: {
           archive: function() {
             var manifest = grunt.file.readJSON('app/manifest.json');
-            return 'package/filter results older then a year when searching ubuntu topics-' + manifest.version + '.zip';
+            return 'package/fresh_ubuntu_search_results-' + manifest.version + '.zip';
           }
         },
         files: [{
