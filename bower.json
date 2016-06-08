@@ -1,10 +1,25 @@
 {
-  "name": "Fresh ubuntu search results",
-  "private": true,
-  "version": "0.0.0",
   "dependencies": {},
   "devDependencies": {
-    "chai": "~3.3.0",
-    "mocha": "~2.3.3"
-  }
+    "chai": "3.5.0",
+    "mocha": "2.5.3"
+  },
+  "name": "fresh-ubuntu-search-results",
+  "private": true,
+
+  "homepage": "https://github.com/bionikspoon/fresh-ubuntu-search-results",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Manu Phatak <bionikspoon@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ]
 }

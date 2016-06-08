@@ -1,21 +1,21 @@
-'use strict';
+/* eslint no-console:0 */
+
 /*
-* CREDITS:
-* Umbrella icon by Jerry Low https://www.iconfinder.com/jerrylow
-* */
+ * CREDITS:
+ * Umbrella icon by Jerry Low https://www.iconfinder.com/jerrylow
+ * */
 
 
 // match http{s,}://{www.,}google.com/{webhp,search}*
 // ie https://www.google.com/webhp
 const reGoogle = /^https?:\/\/(?:www\.)?google\.com\/(?:webhp|search)/;
 
-/*
+/**
  * callback:
  * id: browser tab identifier
  * tab: object containing updated tab info
  * */
 chrome.tabs.onUpdated.addListener((id, tab) => {
-
   /*
    * `tab.url` only exists IF url is changed.
    * */
@@ -32,7 +32,7 @@ chrome.tabs.onUpdated.addListener((id, tab) => {
 
       // If `q` exists and contains ubuntu
       if (payload.has('q') && payload.get('q').indexOf('ubuntu') !== -1) {
-        //show the sweet `pageAction` icon in the address bar.
+        // show the sweet `pageAction` icon in the address bar.
         chrome.pageAction.show(id);
 
         /*
@@ -40,21 +40,27 @@ chrome.tabs.onUpdated.addListener((id, tab) => {
          * forcefully override this extension.
          * */
         // IF the date filter is already set, exit. ELSE set to 'last year'.
-        if (payload.has('tbs') || payload.has('tbas')) {
-          return;
-        } else {
-          payload.set('tbs', 'qdr:y');
-        }
+        if (payload.has('tbs') || payload.has('tbas')) return;
+
+        payload.set('tbs', 'qdr:y');
 
         // Compile the destination url with filter parameter.
-        const destination = url + '#' + [...payload.entries()]
-            .map((params) => params.join('='))
-            .join('&');
+        const destination = `${url}#${[...payload.entries()]
+          .map((params) => params.join('='))
+          .join('&')}`;
 
         // Update the tab with new url.
-        chrome.tabs.update(id, {url: destination});
+        chrome.tabs.update(id, { url: destination });
       }
-
     }
   }
 });
+// chrome.runtime.onInstalled.addListener(details => {
+//   console.log('previousVersion', details.previousVersion);
+// });
+//
+// chrome.tabs.onUpdated.addListener(tabId => {
+//   chrome.pageAction.show(tabId);
+// });
+//
+// console.log('\'Allo \'Allo! Event Page for Page Action');
