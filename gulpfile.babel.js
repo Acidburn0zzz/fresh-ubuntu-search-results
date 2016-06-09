@@ -1,35 +1,29 @@
 /* eslint no-console:0 */
+
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import del from 'del';
 import runSequence from 'run-sequence';
 import { stream as wiredep } from 'wiredep';
+import webpackConfig from './webpack.factory';
+import webpackStream from 'webpack-stream';
 
 const $ = gulpLoadPlugins();
 
-gulp.task('extras', () => gulp.src([
-  'app/*.*',
-  'app/_locales/**',
-  '!app/scripts.babel',
-  '!app/*.json',
-  '!app/*.html',
-  '!app/styles.scss',
-], {
-  base: 'app',
-  dot: true,
-}).pipe(gulp.dest('dist')));
-
-function lint(files, options) {
-  return () => gulp.src(files)
-    .pipe($.eslint(options))
-    .pipe($.eslint.format());
-}
-
-gulp.task('lint', lint('app/scripts.babel/**/*.js', {
-  env: {
-    es6: true,
-  },
-}));
+gulp.task('extras', () => gulp.src(
+  [
+    'app/*.*',
+    'app/_locales/**',
+    '!app/scripts.babel',
+    '!app/*.json',
+    '!app/*.html',
+    '!app/styles.scss',
+  ], {
+    base: 'app',
+    dot: true,
+  })
+  .pipe(gulp.dest('dist'))
+);
 
 gulp.task('images', () => gulp.src('app/images/**/*')
   .pipe($.if($.if.isFile, $.cache($.imagemin(
@@ -84,29 +78,41 @@ gulp.task('chromeManifest', () => gulp.src('app/manifest.json')
   .pipe(gulp.dest('dist'))
 );
 
-gulp.task('babel', () => gulp.src('app/scripts.babel/**/*.js')
-  .pipe($.babel({
-    presets: ['es2015'],
-  }))
-  .pipe(gulp.dest('app/scripts'))
-);
+function webpackTask(env, overrides) {
+  return () =>
+    gulp.src('app/scripts.babel/**/*.js')
+      .pipe(webpackStream(webpackConfig(env, overrides)))
+      .pipe(gulp.dest('app/scripts'));
+}
+gulp.task('webpack', webpackTask());
+gulp.task('webpack:watch', webpackTask('development', { watch: true }));
+gulp.task('webpack:build', webpackTask('production'));
 
-gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
+gulp.task('clean', del.bind(null, ['.tmp', 'dist', 'app/scripts', 'app/styles']));
 
-gulp.task('watch', ['lint', 'babel', 'html'], () => {
+gulp.task('app:watch', () => {
   $.livereload.listen();
 
-  gulp.watch([
-    'app/*.html',
-    'app/scripts/**/*.js',
-    'app/images/**/*',
-    'app/styles/**/*',
-    'app/_locales/**/*.json',
-  ]).on('change', $.livereload.reload);
+  gulp.watch(
+    [
+      'app/*.html',
+      'app/scripts/**/*.js',
+      'app/images/**/*',
+      'app/styles/**/*',
+      'app/_locales/**/*.json',
+    ])
+    .on('change', $.livereload.reload);
 
-  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
   gulp.watch('app/styles.scss/**/*.scss', ['styles']);
   gulp.watch('bower.json', ['wiredep']);
+});
+
+gulp.task('watch', () => {
+  runSequence(
+    'clean',
+    'html',
+    ['app:watch', 'webpack:watch']
+  );
 });
 
 gulp.task('size', () =>
@@ -128,11 +134,14 @@ gulp.task('package', () => {
     .pipe(gulp.dest('package'));
 });
 
-gulp.task('build', (cb) => {
+gulp.task('build', cb => {
   runSequence(
-    'lint', 'babel', 'chromeManifest',
+    'clean',
+    'webpack',
+    'chromeManifest',
     ['html', 'images', 'extras'],
-    'size', cb);
+    'size',
+    cb);
 });
 
 gulp.task('default', ['clean'], cb => {

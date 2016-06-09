@@ -44,13 +44,15 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "http://*.google.com/*",
+        "https://*.google.com/*",
+        "http://google.com/*",
+        "https://google.com/*"
       ],
       "js": [
         "scripts/contentscript.js"
       ],
-      "run_at": "document_end",
+      "run_at": "document_start",
       "all_frames": false
     }
   ],

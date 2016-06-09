@@ -8,6 +8,7 @@
   },
   "extends": ["airbnb-base"],
   "rules": {
-    "no-use-before-define": [2, {"functions": false}]
+    "no-use-before-define": [2, {"functions": false}],
+    "max-len": [2, 120]
   }
 }
