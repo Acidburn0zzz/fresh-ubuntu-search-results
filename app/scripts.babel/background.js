@@ -1,55 +1,69 @@
 const { parse, stringify } = require('query-string');
 const url = require('url');
-const isEmpty = require('lodash/isEmpty');
-const isUndefined = require('lodash/isUndefined');
+const _ = require('lodash');
 
-chrome.tabs.onUpdated.addListener(handleUpdate);
-
-const VALID = {
-  hosts: ['www.google.com'],
+const RULES = [{
+  host: 'www.google.com',
   pathnames: ['/webhp', '/search', '/'],
   keyword: 'ubuntu',
-};
+}];
 
-function handleUpdate(tabId, changeInfo) {
-  // Guard, url not changed
-  if (isUndefined(changeInfo) || isUndefined(changeInfo.url)) return;
+chrome.tabs.onUpdated.addListener(addRules(RULES));
 
-  // parse url
-  const parsed = url.parse(changeInfo.url);
+function addRules(ruleList, callback = _.identity) {
+  const rules = callback(ruleList);
 
-  // Guard, is not www.google.com
-  if (!VALID.hosts.includes(parsed.host)) return;
+  return (tabId, changeInfo, tab) => {
+    rules.forEach(({ host, pathnames, keyword }) => {
+      // Guard, is not www.google.com || ubuntu not in url
+      if (!(tab.url.includes(host) && tab.url.includes(keyword))) return;
 
-  // Guard, is not search page
-  if (!VALID.pathnames.includes(parsed.pathname)) return;
+      // parse url
+      const parsed = url.parse(tab.url);
 
-  chrome.pageAction.show(tabId);
+      // Guard, is not www.google.com (more accurate) || not search page i.e. /search
+      if (!(parsed.host === host && pathnames.includes(parsed.pathname))) return;
 
-  // freshen queries
-  parsed.search = `?${freshen(parsed.search)}`;
-  parsed.hash = `#${freshen(parsed.hash)}`;
+      // show page action icon
+      chrome.pageAction.show(tabId);
 
-  // update url
-  chrome.tabs.update(tabId, { url: url.format(parsed) });
+      // Guard, url not changed
+      if (_.isUndefined(changeInfo.url)) return;
+
+      // freshen query strings
+      const [search, searchUpdated] = freshen(parsed.search, keyword);
+      const [hash, hashUpdated] = freshen(parsed.hash, keyword);
+
+      // Guard, no update required
+      if (!(searchUpdated || hashUpdated)) return;
+
+      // update url components
+      parsed.search = `?${search}`;
+      parsed.hash = `#${hash}`;
+
+      // update url
+      chrome.tabs.update(tabId, { url: url.format(parsed) });
+    });
+  };
 }
 
-function freshen(query) {
+function freshen(query, keyword) {
   // parse query
-  const parsed = parse(query);
+  const parsed = parse(query) || {};
+  const options = { strict: false };
 
-  // Guard, uninteresting
-  if (isEmpty(parsed) || isUndefined(parsed.q)) return stringify(parsed);
+  // Guard, uninteresting, no q
+  if (_.isUndefined(parsed.q)) return [stringify(parsed, options), false];
 
-  // Guard, uninteresting
-  if (!parsed.q.includes(VALID.keyword)) return stringify(parsed);
+  // Guard, uninteresting, not searching ubuntu
+  if (!parsed.q.includes(keyword)) return [stringify(parsed, options), false];
 
-  // Guard, tbas is set (aka user manually removed filter)
-  if (parsed.tbas) return stringify(parsed);
+  // Guard, tbas/tbs is set (aka user manually removed/changed filter)
+  if (parsed.tbas || parsed.tbs) return [stringify(parsed, options), false];
 
   // set filter to 'past year'
-  parsed.tbs = parsed.tbs || 'qdr:y';
+  parsed.tbs = 'qdr:y';
 
   // return query
-  return stringify(parsed);
+  return [stringify(parsed, options), true];
 }
