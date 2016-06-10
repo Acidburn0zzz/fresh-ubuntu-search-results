@@ -5,6 +5,7 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import del from 'del';
 import runSequence from 'run-sequence';
 import { stream as wiredep } from 'wiredep';
+import webpack from 'webpack';
 import webpackConfig from './webpack.factory';
 import webpackStream from 'webpack-stream';
 
@@ -81,7 +82,7 @@ gulp.task('chromeManifest', () => gulp.src('app/manifest.json')
 function webpackTask(env, overrides) {
   return () =>
     gulp.src('app/scripts.babel/**/*.js')
-      .pipe(webpackStream(webpackConfig(env, overrides)))
+      .pipe(webpackStream(webpackConfig(env, overrides), webpack))
       .pipe(gulp.dest('app/scripts'));
 }
 gulp.task('webpack', webpackTask());
@@ -137,7 +138,7 @@ gulp.task('package', () => {
 gulp.task('build', cb => {
   runSequence(
     'clean',
-    'webpack',
+    'webpack:build',
     'chromeManifest',
     ['html', 'images', 'extras'],
     'size',
