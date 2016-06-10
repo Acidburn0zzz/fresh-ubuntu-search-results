@@ -1,66 +1,55 @@
-/* eslint no-console:0 */
+const { parse, stringify } = require('query-string');
+const url = require('url');
+const isEmpty = require('lodash/isEmpty');
+const isUndefined = require('lodash/isUndefined');
 
-/*
- * CREDITS:
- * Umbrella icon by Jerry Low https://www.iconfinder.com/jerrylow
- * */
+chrome.tabs.onUpdated.addListener(handleUpdate);
 
+const VALID = {
+  hosts: ['www.google.com'],
+  pathnames: ['/webhp', '/search', '/'],
+  keyword: 'ubuntu',
+};
 
-// match http{s,}://{www.,}google.com/{webhp,search}*
-// ie https://www.google.com/webhp
-const reGoogle = /^https?:\/\/(?:www\.)?google\.com\/(?:webhp|search)/;
+function handleUpdate(tabId, changeInfo) {
+  // Guard, url not changed
+  if (isUndefined(changeInfo) || isUndefined(changeInfo.url)) return;
 
-/**
- * callback:
- * id: browser tab identifier
- * tab: object containing updated tab info
- * */
-chrome.tabs.onUpdated.addListener((id, tab) => {
-  /*
-   * `tab.url` only exists IF url is changed.
-   * */
-  // IF url changed and is a google search
-  if (tab.hasOwnProperty('url') && reGoogle.test(tab.url)) {
-    // IF url has a query string.
-    if (tab.url.indexOf('#') !== -1) {
-      const [url, _payload] = tab.url.split('#');
+  // parse url
+  const parsed = url.parse(changeInfo.url);
 
-      // parse payload into `Map` object
-      const payload = _payload
-        .split('&')
-        .reduce((obj, param) => obj.set(...param.split('=')), new Map());
+  // Guard, is not www.google.com
+  if (!VALID.hosts.includes(parsed.host)) return;
 
-      // If `q` exists and contains ubuntu
-      if (payload.has('q') && payload.get('q').indexOf('ubuntu') !== -1) {
-        // show the sweet `pageAction` icon in the address bar.
-        chrome.pageAction.show(id);
+  // Guard, is not search page
+  if (!VALID.pathnames.includes(parsed.pathname)) return;
 
-        /*
-         * Payload param `tbas=0` means filter "all time"; allowing user to
-         * forcefully override this extension.
-         * */
-        // IF the date filter is already set, exit. ELSE set to 'last year'.
-        if (payload.has('tbs') || payload.has('tbas')) return;
+  chrome.pageAction.show(tabId);
 
-        payload.set('tbs', 'qdr:y');
+  // freshen queries
+  parsed.search = `?${freshen(parsed.search)}`;
+  parsed.hash = `#${freshen(parsed.hash)}`;
 
-        // Compile the destination url with filter parameter.
-        const destination = `${url}#${[...payload.entries()]
-          .map((params) => params.join('='))
-          .join('&')}`;
+  // update url
+  chrome.tabs.update(tabId, { url: url.format(parsed) });
+}
 
-        // Update the tab with new url.
-        chrome.tabs.update(id, { url: destination });
-      }
-    }
-  }
-});
-// chrome.runtime.onInstalled.addListener(details => {
-//   console.log('previousVersion', details.previousVersion);
-// });
-//
-// chrome.tabs.onUpdated.addListener(tabId => {
-//   chrome.pageAction.show(tabId);
-// });
-//
-// console.log('\'Allo \'Allo! Event Page for Page Action');
+function freshen(query) {
+  // parse query
+  const parsed = parse(query);
+
+  // Guard, uninteresting
+  if (isEmpty(parsed) || isUndefined(parsed.q)) return stringify(parsed);
+
+  // Guard, uninteresting
+  if (!parsed.q.includes(VALID.keyword)) return stringify(parsed);
+
+  // Guard, tbas is set (aka user manually removed filter)
+  if (parsed.tbas) return stringify(parsed);
+
+  // set filter to 'past year'
+  parsed.tbs = parsed.tbs || 'qdr:y';
+
+  // return query
+  return stringify(parsed);
+}
