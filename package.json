@@ -42,7 +42,7 @@
     "node": ">=5.11.1"
   },
   "description": "Best chrome extension of all time! Filtered by past year.",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "directories": {
     "test": "test"
   },
