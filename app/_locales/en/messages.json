@@ -1,10 +1,10 @@
 {
   "appName": {
-    "message": "Fresh ubuntu search results",
+    "message": "Fresh Ubuntu Search Results",
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "Best chrome extension of all time! Filtered by past year.",
+    "message": "Get fresh Ubuntu search results! Filtered by past year.",
     "description": "The description of the application"
   }
 }

@@ -1,60 +1,69 @@
-'use strict';
-/*
-* CREDITS:
-* Umbrella icon by Jerry Low https://www.iconfinder.com/jerrylow
-* */
+import { parse as qParse, stringify as qStringify } from 'query-string';
+import { parse as urlParse, format as urlFormat } from 'url';
+import _ from 'lodash';
 
+const RULES = [{
+  host: 'www.google.com',
+  pathnames: ['/webhp', '/search', '/'],
+  keyword: 'ubuntu',
+}];
 
-// match http{s,}://{www.,}google.com/{webhp,search}*
-// ie https://www.google.com/webhp
-const reGoogle = /^https?:\/\/(?:www\.)?google\.com\/(?:webhp|search)/;
+chrome.tabs.onUpdated.addListener(addRules(RULES));
 
-/*
- * callback:
- * id: browser tab identifier
- * tab: object containing updated tab info
- * */
-chrome.tabs.onUpdated.addListener((id, tab) => {
+function addRules(ruleList, callback = _.identity) {
+  const rules = callback(ruleList);
 
-  /*
-   * `tab.url` only exists IF url is changed.
-   * */
-  // IF url changed and is a google search
-  if (tab.hasOwnProperty('url') && reGoogle.test(tab.url)) {
-    // IF url has a query string.
-    if (tab.url.indexOf('#') !== -1) {
-      const [url, _payload] = tab.url.split('#');
+  return (tabId, changeInfo, tab) => {
+    rules.forEach(({ host, pathnames, keyword }) => {
+      // Guard, is not www.google.com || ubuntu not in url
+      if (!(tab.url.includes(host) && tab.url.includes(keyword))) return;
 
-      // parse payload into `Map` object
-      const payload = _payload
-        .split('&')
-        .reduce((obj, param) => obj.set(...param.split('=')), new Map());
+      // parse url
+      const parsed = urlParse(tab.url);
 
-      // If `q` exists and contains ubuntu
-      if (payload.has('q') && payload.get('q').indexOf('ubuntu') !== -1) {
-        //show the sweet `pageAction` icon in the address bar.
-        chrome.pageAction.show(id);
+      // Guard, is not www.google.com (more accurate) || not search page i.e. /search
+      if (!(parsed.host === host && pathnames.includes(parsed.pathname))) return;
 
-        /*
-         * Payload param `tbas=0` means filter "all time"; allowing user to
-         * forcefully override this extension.
-         * */
-        // IF the date filter is already set, exit. ELSE set to 'last year'.
-        if (payload.has('tbs') || payload.has('tbas')) {
-          return;
-        } else {
-          payload.set('tbs', 'qdr:y');
-        }
+      // show page action icon
+      chrome.pageAction.show(tabId);
 
-        // Compile the destination url with filter parameter.
-        const destination = url + '#' + [...payload.entries()]
-            .map((params) => params.join('='))
-            .join('&');
+      // Guard, url not changed
+      if (_.isUndefined(changeInfo.url)) return;
 
-        // Update the tab with new url.
-        chrome.tabs.update(id, {url: destination});
-      }
+      // freshen query strings
+      const [search, searchUpdated] = freshen(parsed.search, keyword);
+      const [hash, hashUpdated] = freshen(parsed.hash, keyword);
 
-    }
-  }
-});
+      // Guard, no update required
+      if (!(searchUpdated || hashUpdated)) return;
+
+      // update url components
+      parsed.search = `?${search}`;
+      parsed.hash = `#${hash}`;
+
+      // update url
+      chrome.tabs.update(tabId, { url: urlFormat(parsed) });
+    });
+  };
+}
+
+function freshen(query, keyword) {
+  // parse query
+  const parsed = qParse(query) || {};
+  const options = { strict: false };
+
+  // Guard, uninteresting, no q
+  if (_.isUndefined(parsed.q)) return [qStringify(parsed, options), false];
+
+  // Guard, uninteresting, not searching ubuntu
+  if (!parsed.q.includes(keyword)) return [qStringify(parsed, options), false];
+
+  // Guard, tbas/tbs is set (aka user manually removed/changed filter)
+  if (parsed.tbas || parsed.tbs) return [qStringify(parsed, options), false];
+
+  // set filter to 'past year'
+  parsed.tbs = 'qdr:y';
+
+  // return query
+  return [qStringify(parsed, options), true];
+}
