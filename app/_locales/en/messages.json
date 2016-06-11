@@ -3,6 +3,10 @@
     "message": "Fresh Ubuntu Search Results",
     "description": "The name of the application"
   },
+  "appShortName": {
+    "message": "Fresh Ubuntu",
+    "description": "The short name of the application"
+  },
   "appDescription": {
     "message": "Get fresh Ubuntu search results! Filtered by past year.",
     "description": "The description of the application"

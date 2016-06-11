@@ -9,16 +9,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="500mm"
-   height="500mm"
-   viewBox="0 0 1771.6535 1771.6535"
+   width="1600"
+   height="1600"
+   viewBox="0 0 1599.9999 1599.9999"
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
    sodipodi:docname="icon.svg"
-   inkscape:export-filename="/home/manu/Code/fresh-ubuntu-search-results/app/images/icon-38.png"
-   inkscape:export-xdpi="1.9299999"
-   inkscape:export-ydpi="1.9299999">
+   inkscape:export-filename="/home/manu/Desktop/fresh-ubuntu-search-results.png"
+   inkscape:export-xdpi="57.599998"
+   inkscape:export-ydpi="57.599998">
   <title
      id="title4198">Fresh Ubuntu Search Results</title>
   <defs
@@ -31,7 +31,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.25"
-     inkscape:cx="779.67977"
+     inkscape:cx="69.750233"
      inkscape:cy="657.91975"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -46,7 +46,8 @@
      inkscape:guide-bbox="true"
      inkscape:object-paths="false"
      inkscape:snap-smooth-nodes="false"
-     inkscape:snap-intersection-paths="true" />
+     inkscape:snap-intersection-paths="true"
+     units="px" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -83,10 +84,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,719.29134)">
+     transform="translate(0,547.63778)">
     <g
        id="g4481"
-       transform="matrix(7.6091479,0,0,7.6091479,-3844.2285,1111.1118)">
+       transform="matrix(7.3845228,0,0,7.3845228,-3790.4221,1169.0543)">
       <circle
          style="opacity:1;fill:#38abc8;fill-opacity:1;stroke:none;stroke-width:25;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="circle4464"
