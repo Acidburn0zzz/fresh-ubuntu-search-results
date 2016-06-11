@@ -29,7 +29,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="102.37225"
+     inkscape:cx="-29.056321"
      inkscape:cy="158.3577"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -53,7 +53,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <dc:creator>
           <cc:Agent>
             <dc:title>Manu Phatak &lt;bionikspoon@gmail.com&gt;</dc:title>
@@ -93,8 +93,7 @@
        width="440"
        height="280"
        x="-1.5258789e-05"
-       y="772.36218"
-       ry="2" />
+       y="772.36218" />
     <g
        id="g4821"
        transform="matrix(1.2291255,0,0,1.2291255,-50.134534,-211.7299)">
