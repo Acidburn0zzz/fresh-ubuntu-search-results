@@ -16,7 +16,10 @@
    id="svg4274"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="screenshot.svg">
+   sodipodi:docname="screenshot.svg"
+   inkscape:export-filename="/home/manu/Code/fresh-ubuntu-search-results/app/images/screenshot.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <defs
      id="defs4276">
     <clipPath
@@ -52,16 +55,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35"
-     inkscape:cx="533.47123"
-     inkscape:cy="225.99795"
+     inkscape:cx="362.47502"
+     inkscape:cy="322.32613"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="false"
+     showgrid="true"
      units="px"
-     inkscape:window-width="1519"
-     inkscape:window-height="757"
-     inkscape:window-x="249"
-     inkscape:window-y="92"
+     inkscape:window-width="1223"
+     inkscape:window-height="667"
+     inkscape:window-x="2261"
+     inkscape:window-y="158"
      inkscape:window-maximized="0">
     <sodipodi:guide
        position="0,0"
@@ -89,6 +92,16 @@
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
         <dc:title></dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Manu Phatak &lt;bionikspoon@gmail.com&gt;</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>Manu Phatak</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -104,6 +117,32 @@
        height="800"
        x="0"
        y="252.36217" />
+    <g
+       id="g4292">
+      <g
+         id="g4297"
+         transform="matrix(0.52397195,0.85765228,-0.85792999,0.52380234,1302.8252,348.42897)"
+         inkscape:export-filename="/home/manu/Desktop/g4297.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <path
+           inkscape:connector-curvature="0"
+           style="opacity:0.47900008;fill:#000000;fill-opacity:1;stroke:none;stroke-width:25;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M 243.02791,558.5442 -4.7429852,857.24238 -590.90388,1079.5569 l 213.7329,370.2213 a 799.99999,799.99999 0 0 0 229.36727,33.9226 799.99999,799.99999 0 0 0 693.03458,-401.7209 L 243.02791,558.5442 Z"
+           id="path4391" />
+        <path
+           style="opacity:1;fill:#38abc8;fill-opacity:1;stroke:none;stroke-width:40;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="M -147.79301,5.0925076 C -150.80656,573.36794 -679.09023,565.42028 -625.97565,944.20573 c 36.53958,260.58207 214.09098,418.11097 478.18264,418.11517 l 0,0 c 264.09608,-10e-5 441.64918,-157.537 478.18839,-418.12277 C 383.50812,565.41274 -147.79301,5.0925076 -147.79301,5.0925076 Z"
+           id="path4214"
+           inkscape:connector-curvature="0"
+           sodipodi:nodetypes="cacsac" />
+        <path
+           style="opacity:1;fill:#16677b;fill-opacity:1;stroke:none;stroke-width:40;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 229.98034,715.89293 c 25.01714,187.1749 -61.51115,396.74577 -238.987377,478.26327 -115.065563,56.3209 -249.735333,62.3225 -372.875133,31.7736 107.26832,69.7989 239.76675,77.5124 361.668529,46.312 137.298221,-33.1955 243.406871,-153.6962 269.145701,-290.00125 18.93576,-88.87915 9.8285,-182.93242 -18.95172,-266.34762 z"
+           id="path4430"
+           inkscape:connector-curvature="0" />
+      </g>
+    </g>
     <g
        transform="matrix(1.7230769,0,0,1.7230769,-1169.2307,-877.33113)"
        id="g4822">

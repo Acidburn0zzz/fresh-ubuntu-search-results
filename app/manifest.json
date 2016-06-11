@@ -1,8 +1,11 @@
 {
   "name": "__MSG_appName__",
-  "version": "2.0.1",
+  "short_name":"__MSG_appShortName__",
+  "version": "2.1.0",
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
+  "author": "Manu Phatak <bionikspoon@gmail.com>",
+  "homepage_url":"https://github.com/bionikspoon/fresh-ubuntu-search-results",
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",
@@ -14,7 +17,8 @@
     "scripts": [
       "scripts/chromereload.js",
       "scripts/background.js"
-    ]
+    ],
+    "persistent": false
   },
   "permissions": [
     "tabs"
